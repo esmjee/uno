@@ -134,11 +134,12 @@ io.on('connection', socket => {
     });
 
     socket.on('game/start', game => {
+        console.log('game/start', game);
         let allPlayers = [];
         for (let player of game.players) {
             allPlayers.push(player.username);
         }
-        Game.findOneAndUpdate({ game }, { $set: { status: 'playing', turns: allPlayers } }, (error, data) => {
+        Game.findOneAndUpdate({ code: game.code }, { $set: { status: 'playing', turns: allPlayers } }, (error, data) => {
             if (error) {
                 console.log('game/start', error);
                 return;
@@ -167,6 +168,21 @@ io.on('connection', socket => {
 
                 // console.log('game/card/taken data:', data);
                 io.emit('game/card/taken', data);
+            }
+        });
+    });
+
+    socket.on('game/wonGame', req => {
+        Game.findOneAndUpdate({ code: req.game.code }, { $set: { winner: req.winner } }, (error, data) => {
+            if (error) {
+                console.log('game/wonGame', error);
+                return;
+            } else {
+                if (!data) return;
+
+                data.winner = req.winner;
+
+                io.emit('game/game/won', data);
             }
         });
     });

@@ -136,6 +136,13 @@ export class GameComponent implements OnInit {
 			if (this.gameCode === game.code) {
 				this.game = game;
 				console.log('game/card/taken', this.game);
+
+				for (let player of this.game['players']) {
+					if (player['hand'].length === 0) {
+						this.gameOver(player['username']);
+						return;
+					}
+				}
 			}
 		});
 	}
@@ -199,6 +206,28 @@ export class GameComponent implements OnInit {
 		}
 	}
 
+	public takeCardFromPile() {
+		for (let player of this.game['players']) {
+			if (player['username'] === this.usersService.user['username']) {
+				var card = this.randomCard();
+				player['hand'].push(card);
+
+				let canPlayCard = false;
+				for (let crd of player['hand']) {
+					if (this.isPlayableCard(crd)) {
+						canPlayCard = true;
+					}
+				}
+
+				if (!canPlayCard) {
+					this.game['turns'].shift();
+					this.game['turns'].push(player['username']);
+				}
+				this.gameService.takeCard(this.game);
+			}
+		}
+	}
+
 	public isPlayableCard(card) {
 		// same color
 		if (this.game['topOfPile']['color'] === card['color']) {
@@ -213,7 +242,16 @@ export class GameComponent implements OnInit {
 			return true;
 		}
 
+		// remove this later
+		if (card['value'] == "*") {
+			return true;
+		}
+
 		return false;
+	}
+
+	public gameOver(winner) {
+		this.gameService.wonGame({ game: this.game, winner: winner });
 	}
 
 	public playCard(card) {

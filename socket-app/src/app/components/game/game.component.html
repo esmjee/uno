@@ -64,6 +64,7 @@
 </div>
 <div *ngIf="game.status && game.status == 'playing'">
 	<p>playing: {{ game.topOfPile.color }} {{ game.topOfPile.value }}</p>
+	<p (click)="takeCardFromPile()">Take a card</p>
 
 	<div *ngFor="let player of game.players">
 		<h3 *ngIf="player.username == game.turns[0]">name: {{ player.username }} **beurt**</h3>

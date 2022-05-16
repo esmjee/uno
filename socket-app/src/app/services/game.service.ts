@@ -32,4 +32,8 @@ export class GameService {
 	public takeCard(game) {
 		this.socket.emit('game/takeCard', game);
 	}
+
+	public wonGame(data) {
+		this.socket.emit('game/wonGame', data);
+	}
 }

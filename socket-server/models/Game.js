@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var Game = new Schema({
     created_by: Object,
     code: String,
+    winner: String,
     turns: {
         type: Array,
         default: []
