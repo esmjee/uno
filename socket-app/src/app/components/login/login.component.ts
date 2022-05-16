@@ -23,18 +23,19 @@ export class LoginComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		// if (this.usersService.isLoggedIn()) {
-		// 	console.log('logged in');
-		// 	this.router.navigate(['/profile']);
-		// 	return;
-		// }
-		// console.log('not logged in');
-
 		this.socket.on('loggedInUser', (user) => {
 			this.usersService.setUser(user);
+			localStorage.setItem('user', JSON.stringify(user));
+
+			let oldUrl = this.usersService.oldUrl; 
+			if (oldUrl != '') {
+				this.usersService.oldUrl = '';
+				this.router.navigate([oldUrl]);
+				return;
+			}
+
 			this.router.navigate(['/profile']);
 
-			localStorage.setItem('user', JSON.stringify(user));
 		});
 
 		this.socket.on('loggedInUser/incorrect/password', (user) => {

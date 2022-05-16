@@ -36,4 +36,16 @@ export class GameService {
 	public wonGame(data) {
 		this.socket.emit('game/wonGame', data);
 	}
+
+	public newMessage(game) {
+		this.socket.emit('game/newMessage', game);
+	}
+
+	public kickPlayer(game, player) {
+		this.socket.emit('game/kickPlayer', { game: game, player: player });
+	}
+
+	public checkCode(code) {
+		this.socket.emit('game/checkCode', code);
+	}
 }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { RouterModule, Routes } from '@angular/router'
 import { CommonModule } from '@angular/common';
@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { GameComponent } from './components/game/game.component';
 import { LoginComponent } from './components/login/login.component';
 import { PlayerMenuComponent } from './components/player-menu/player-menu.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 const routes: Routes = [
@@ -32,11 +33,11 @@ const routes: Routes = [
     GameComponent,
     LoginComponent,
     PlayerMenuComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,
     CommonModule,
-    ReactiveFormsModule,
     RouterModule.forRoot(routes),
     FormsModule,
     SocketIoModule.forRoot(config),

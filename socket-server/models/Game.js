@@ -29,6 +29,10 @@ var Game = new Schema({
         type: Object,
         default: {}
     },
+    chat_allowed: {
+        type: Boolean,
+        default: true
+    },
     created_at: {
         type: Date,
         default: Date.now

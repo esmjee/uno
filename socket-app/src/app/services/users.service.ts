@@ -6,6 +6,7 @@ import { Socket } from 'ngx-socket-io';
 })
 export class UsersService {
 
+	public oldUrl = '';
 	public user = {};
 
   	constructor(

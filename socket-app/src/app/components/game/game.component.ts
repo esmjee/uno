@@ -42,7 +42,7 @@ export class GameComponent implements OnInit {
 		{ color: 'green', value: 'reverse' }, { color: 'green', value: 'take2' }, { color: 'green', value: 'skip' },
 
 		// Special
-		{ color: '*', value: 'wild' }, { color: '*', value: 'wildDrawFour' },
+		{ color: '*', value: 'wild' }, { color: '*', value: 'wild' }, { color: '*', value: 'wildDrawFour' }, { color: '*', value: 'wildDrawFour' },
 	];
 	
 	contextmenu = false;
@@ -64,6 +64,7 @@ export class GameComponent implements OnInit {
 		// lobby
 		//
 		if (Object.keys(this.usersService.user).length === 0) {
+			this.usersService.oldUrl = this.router.url;
 			this.router.navigate(['/login']);
 			return;
 		}
@@ -71,7 +72,7 @@ export class GameComponent implements OnInit {
 		// game errors
 		this.socket.on('game/code/found', (game) => {
 			this.game = game;
-			console.log('game/code/found', this.game);
+			// console.log('game/code/found', this.game);
 
 			for (let player of this.game['players']) {
 				if (player['username'] === this.usersService.user['username']) {
@@ -95,23 +96,31 @@ export class GameComponent implements OnInit {
 		this.socket.on('game/created', (game) => {
 			this.game = game;
 			this.router.navigate(['/game/' + game.code]);
-			console.log(this.game);
+			// console.log(this.game);
 		});
 
 		this.socket.on('game/started', (game) => {
 			if (this.gameCode === game.code) {
-				console.log('is code');
 				this.game = game;
-				console.log('game/started', this.game);
+				// console.log('game/started', this.game);
 				this.launchGame();
 			}
 		});
 
 		this.socket.on('game/joined', (game) => {
-			console.log('user joined a game', this.game['code'], game.code);
-			console.log(game.players);
+			// console.log('user joined a game', this.game['code'], game.code);
+			// console.log(game.players);
 			if (this.game['code'] == game.code) {
 				this.game = game;
+			}
+		});
+
+		this.socket.on('game/kicked', (game) => {
+			this.game = game;
+
+			if (this.game['players'].find(p => p.username === this.usersService.user['username']) == undefined) {
+				this.game = {};
+				this.router.navigate(['/game/']);
 			}
 		});
 
@@ -135,7 +144,7 @@ export class GameComponent implements OnInit {
 		this.socket.on('game/card/taken', (game) => {
 			if (this.gameCode === game.code) {
 				this.game = game;
-				console.log('game/card/taken', this.game);
+				// console.log('game/card/taken', this.game);
 
 				for (let player of this.game['players']) {
 					if (player['hand'].length === 0) {
@@ -144,6 +153,27 @@ export class GameComponent implements OnInit {
 					}
 				}
 			}
+		});
+
+		this.socket.on('game/message/new', (game) => {
+			if (this.gameCode === game.code) {
+				this.game = game;
+				// console.log('game/message/new', this.game);
+			}
+		});
+
+		this.socket.on('game/code/ok', (code) => {
+			this.gameService.createGame({ 
+				created_by: this.usersService.user, 
+				code: code, 
+				chat_allowed: true,
+				chat_messages: [],
+				players: [{ username: this.usersService.user['username'], hand: [] }] ,
+			});
+		});
+
+		this.socket.on('game/code/notok', (code) => {
+			this.createGame();
 		});
 	}
 
@@ -154,14 +184,19 @@ export class GameComponent implements OnInit {
 
 	public createGame() {
 		if (!this.usersService.user['username']) {
+			this.usersService.oldUrl = this.router.url;
 			this.router.navigate(['/login']);
 			return;
 		}
 
 		this.gameService.error = '';
-		this.gameService.createGame({ created_by: this.usersService.user, code: this.Id(), players: [ { username: this.usersService.user['username'], hand: [] } ] });
+		this.gameService.checkCode(this.Id());
 	}
 
+	public kickPlayer(player) {
+		this.gameService.kickPlayer(this.game, player);
+	}
+		
 	private Id() {
 		let text = '';
 		const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -174,6 +209,9 @@ export class GameComponent implements OnInit {
 	}
 
 	public startGame() {
+		const input = document.getElementById('chat-allowed') as HTMLInputElement | null;
+
+		this.game['chat_allowed'] = input.checked;
 		this.gameService.startGame(this.game);
 	}
 
@@ -255,7 +293,7 @@ export class GameComponent implements OnInit {
 	}
 
 	public playCard(card) {
-		if (this.game['turns'][0] != this.usersService.user['username']) return console.log(this.game);
+		if (this.game['turns'][0] != this.usersService.user['username']) return;
 		if (!this.isPlayableCard(card)) return;
 
 		for (let player of this.game['players']) {

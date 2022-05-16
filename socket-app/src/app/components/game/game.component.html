@@ -37,7 +37,16 @@
 			<p class="title">Game status:</p>
 			<p [class]="'description ' + game.status">{{ game.status }}</p>
 		</div>
-		<div class="start-button-holder">
+		<div class="game-info game-status" *ngIf="game.created_by.username == usersService.user.username">
+			<p class="title">Allow Chat:</p>
+			<p class="description">
+				<label class="switch">
+					<input type="checkbox" id="chat-allowed" checked>
+					<span class="slider round"></span>
+				</label>
+			</p>
+		</div>
+		<div class="game-info start-button-holder">
 			<div *ngIf="game.created_by.username == usersService.user.username">
 				<div *ngIf="game.players.length <= 1">
 					<button class="game-start-button" style="opacity: 50%;">Not enough players</button>
@@ -59,11 +68,14 @@
 			<div class="player-holder">
 				<p class="player-name" (click)="openTab(player.username)">{{ player.username }}</p>
 			</div>
+			<div *ngIf="game.created_by.username == usersService.user.username">
+				<button *ngIf="player.username != usersService.user.username" class="player-button" (click)="kickPlayer(player.username)">Kick</button>
+			</div>
 		</div>
 	</div>
 </div>
-<div *ngIf="game.status && game.status == 'playing'">
-	<p>playing: {{ game.topOfPile.color }} {{ game.topOfPile.value }}</p>
+<div *ngIf="game.status && game.status == 'playing'" class="play-holder">
+	<!-- <p>playing: {{ game.topOfPile.color }} {{ game.topOfPile.value }}</p>
 	<p (click)="takeCardFromPile()">Take a card</p>
 
 	<div *ngFor="let player of game.players">
@@ -72,10 +84,107 @@
 			
 		<ng-container *ngIf="player.username == usersService.user['username']">
 			<div *ngFor="let card of player.hand">
-				<p *ngIf="isPlayableCard(card)" (click)="playCard(card)">card: {{ card.color }} {{ card.value }}</p>
-				<p *ngIf="!isPlayableCard(card)" style="opacity: 50%;">card: {{ card.color }} {{ card.value }}</p>
+				<div *ngIf="isPlayableCard(card)" (click)="playCard(card)">
+
+					<div [class]="'card num-' + card.value + ' my-card ' + card.color">
+						<span class="inner">
+							<span class="mark" *ngIf="card.value != 'reverse'">{{ card.value }}</span>
+							<span class="mark" *ngIf="card.value == 'reverse'">⇄</span>
+						</span>
+					</div>
+
+				</div>
+				<div *ngIf="!isPlayableCard(card)" style="opacity: 50%;">
+
+					<div [class]="'card num-' + card.value + ' my-card ' + card.color">
+						<span class="inner">
+							<span class="mark" *ngIf="card.value == 'reverse'">⇄</span>
+							<span class="mark" *ngIf="card.value == 'wildDrawFour'">+4</span>
+							<span class="mark" *ngIf="card.value == 'take2'">+2</span>
+							<span class="mark" *ngIf="card.value == 'skip'">⊘</span>
+							<span class="mark" 
+								*ngIf="card.value != 'reverse' && card.value != 'wildDrawFour' && card.value != 'take2' && card.value != 'skip'">
+								{{ card.value }}
+							</span>
+						</span>
+					</div>
+
+				</div>
 			</div>
 		</ng-container>
 	</div>
+	<div class="game-chat-holder" *ngIf="game.chat_allowed">
+		<app-chat [game]="game"></app-chat>
+	</div> -->
+
+	<!-- <div class="card num-3 my-card yellow"><span class="inner"><span class="mark">3</span></span></div> -->
+
+	<!-- <div class="queue-holder">
+		<div class="queue-player">
+			<div class="queue-player-info">
+				<div class="queue-player-avatar-holder">
+					<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
+				</div>
+				<div class="queue-player-name-holder">
+					<p class="queue-player-name">Player name</p>
+				</div>
+			</div>
+			<div class="queue-player-card">
+				<div class="card-count-holder">
+					<p class="card-count">5</p>
+				</div>
+			</div>
+		</div>
+		<div class="queue-player">
+			<div class="queue-player-info">
+				<div class="queue-player-avatar-holder">
+					<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
+				</div>
+				<div class="queue-player-name-holder">
+					<p class="queue-player-name">Player name</p>
+				</div>
+			</div>
+			<div class="queue-player-card">
+				<div class="card-count-holder">
+					<p class="card-count">5</p>
+				</div>
+			</div>
+		</div>
+		<div class="queue-player">
+			<div class="queue-player-info">
+				<div class="queue-player-avatar-holder">
+					<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
+				</div>
+				<div class="queue-player-name-holder">
+					<p class="queue-player-name">Player name</p>
+				</div>
+			</div>
+			<div class="queue-player-card">
+				<div class="card-count-holder">
+					<p class="card-count">5</p>
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+	<!-- <div class="play-info">
+		<div class="play-stats">
+			<div class="box"></div>
+		</div>
+		<div class="play-chat">
+			<div class="box"></div>
+		</div>
+	</div>
+	<div class="game-play">
+		<div class="play-table">
+			<div class="box"></div>
+		</div>
+		<div class="play-cards">
+			<div class="box"></div>
+		</div>
+	</div>
+	<div class="play-opponents">
+		<div class="box"></div>
+	</div> -->
 
 </div>

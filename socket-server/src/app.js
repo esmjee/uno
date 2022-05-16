@@ -2,7 +2,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const mongoose = require('mongoose')
-const crypto = require('crypto')
+const bcrypt = require("bcrypt");
 
 // Models
 let User = require('../models/User');
@@ -19,6 +19,28 @@ mongoose
   });
 
 io.on('connection', socket => {
+
+    socket.on('loginUser', user => {
+        User.findOne({ username: user.username }, (error, data) => {
+            if (error) {
+                console.log('loginUser', error);
+                return;
+            } else {
+                if (!data) {
+                    socket.emit('loggedInUser/incorrect/password', user);
+                    return;
+                }
+
+                const validPassword = bcrypt.compare(user.password, data.password);
+                if (!validPassword) {
+                    socket.emit('loggedInUser/incorrect/password', user);
+                    return;
+                }
+
+                socket.emit('loggedInUser', data);
+            }
+        });
+    });
 
 	// login
 	socket.on('newUser', user => {
@@ -41,41 +63,22 @@ io.on('connection', socket => {
                                 socket.emit('newUser/incorrect/alreadyUsed', user);
                                 return;
                             } else {
-                                User.create(user, (error, data) => {
-                                    if (error) {
-                                        console.log('newUser', error);
-                                        return;
-                                    } else {
-                                        // console.log('newUser data:', data);
-                                        socket.emit('loggedInUser', data);
-                                    }
+                                bcrypt.hash(user.password.toString(), 10).then(hash => {
+                                    user.password = hash;
+                                    User.create(user, (error, data) => {
+                                        if (error) {
+                                            console.log('newUser', error);
+                                            return;
+                                        } else {
+                                            // console.log('newUser data:', data);
+                                            socket.emit('loggedInUser', data);
+                                        }
+                                    });
                                 });
                             }
                         }
                     });
                 }
-            }
-        });
-    });
-
-    socket.on('loginUser', user => {
-		console.log('loginUser', user);
-        User.findOne({ username: user.username }, (error, data) => {
-            if (error) {
-                console.log('loginUser', error);
-                return;
-            } else {
-                if (!data) {
-                    socket.emit('loggedInUser/incorrect/password', user);
-                    return;
-                }
-
-                if (user.password != data.password) {
-                    socket.emit('loggedInUser/incorrect/password', user);
-                    return;
-                }
-
-                socket.emit('loggedInUser', data);
             }
         });
     });
@@ -139,7 +142,7 @@ io.on('connection', socket => {
         for (let player of game.players) {
             allPlayers.push(player.username);
         }
-        Game.findOneAndUpdate({ code: game.code }, { $set: { status: 'playing', turns: allPlayers } }, (error, data) => {
+        Game.findOneAndUpdate({ code: game.code }, { $set: { status: 'playing', turns: allPlayers, chat_allowed: game.chat_allowed } }, (error, data) => {
             if (error) {
                 console.log('game/start', error);
                 return;
@@ -172,6 +175,46 @@ io.on('connection', socket => {
         });
     });
 
+    socket.on('game/newMessage', game => {
+        Game.findOneAndUpdate({ code: game.code }, { $set: { chat_messages: game.chat_messages } }, (error, data) => {
+            if (error) {
+                console.log('game/newMessage', error);
+                return;
+            } else {
+                if (!data) return;
+
+                data.chat_messages = game.chat_messages;
+
+                io.emit('game/message/new', data);
+            }
+        });
+    });
+
+    socket.on('game/kickPlayer', req => {
+        let game = req.game;
+        let user = req.player;
+
+        for (let player of game.players) {
+            if (player.username == user) {
+                game.players.splice(game.players.indexOf(player), 1);
+            }
+        }
+
+        Game.findOneAndUpdate({ code: game.code }, { $set: { players: game.players } }, (error, data) => {
+            if (error) {
+                console.log('game/kickPlayer', error);
+                return;
+            } else {
+                if (!data) return;
+
+                data.players = game.players;
+
+                io.emit('game/kicked', data);
+            }
+        });
+    });
+
+
     socket.on('game/wonGame', req => {
         Game.findOneAndUpdate({ code: req.game.code }, { $set: { winner: req.winner } }, (error, data) => {
             if (error) {
@@ -183,6 +226,22 @@ io.on('connection', socket => {
                 data.winner = req.winner;
 
                 io.emit('game/game/won', data);
+            }
+        });
+    });
+
+    socket.on('game/checkCode', code => {
+        Game.findOne({ code: code }, (error, data) => {
+            if (error) {
+                console.log('game/checkCode', error);
+                return;
+            } else {
+                if (data) {
+                    socket.emit('game/code/notok', code);
+                    return;
+                }
+
+                socket.emit('game/code/ok', code);
             }
         });
     });
