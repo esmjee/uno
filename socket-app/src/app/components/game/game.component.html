@@ -66,7 +66,8 @@
 	<p>playing: {{ game.topOfPile.color }} {{ game.topOfPile.value }}</p>
 
 	<div *ngFor="let player of game.players">
-		<h3>name: {{ player.username }}</h3>
+		<h3 *ngIf="player.username == game.turns[0]">name: {{ player.username }} **beurt**</h3>
+		<h3 *ngIf="player.username != game.turns[0]">name: {{ player.username }}</h3>
 			
 		<ng-container *ngIf="player.username == usersService.user['username']">
 			<div *ngFor="let card of player.hand">

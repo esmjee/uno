@@ -44,15 +44,7 @@ export class GameComponent implements OnInit {
 		// Special
 		{ color: '*', value: 'wild' }, { color: '*', value: 'wildDrawFour' },
 	];
-
-	// private availableCards = [
-	// 	'yellow1', 'yellow2', 'yellow3', 'yellow4', 'yellow5', 'yellow6', 'yellow7', 'yellow8', 'yellow9', 'yellow10', 'yellowreverse',
-	// 	'blue1', 'blue2', 'blue3', 'blue4', 'blue5', 'blue6', 'blue7', 'blue8', 'blue9', 'blue10', 'bluereverse',
-	// 	'green1', 'green2', 'green3', 'green4', 'green5', 'green6', 'green7', 'green8', 'green9', 'green10', 'greenreverse',
-	// 	'red1', 'red2', 'red3', 'red4', 'red5', 'red6', 'red7', 'red8', 'red9', 'red10', 'redreverse',
-	// 	'wild', 'redtake2', 'bluetake2', 'greentake2', 'yellowtake2', 'take4'
-	// ];
-
+	
 	contextmenu = false;
 	contextmenuX = 0;
 	contextmenuY = 0;
@@ -201,7 +193,7 @@ export class GameComponent implements OnInit {
 		for (let player of this.game['players']) {
 			if (player['username'] === this.usersService.user['username']) {
 				var card = this.randomCard();
-				console.log('took:', card);
+				player['hand'].push(card);
 				this.gameService.takeCard(this.game);
 			}
 		}
@@ -225,18 +217,20 @@ export class GameComponent implements OnInit {
 	}
 
 	public playCard(card) {
-		console.log('played card', card);
-		console.log('top of pile', this.game['topOfPile']);
-		console.log('is playable', this.isPlayableCard(card));
+		if (this.game['turns'][0] != this.usersService.user['username']) return console.log(this.game);
+		if (!this.isPlayableCard(card)) return;
 
-		// for (let player of this.game['players']) {
-		// 	if (player['username'] === this.usersService.user['username']) {
-		// 		console.log(card);
-		// 		player['hand'] = player['hand'].filter(c => c !== card);
-		// 		this.game['topOfPile'] = card;
-		// 		// this.gameService.playCard(this.game);
-		// 	}
-		// }
+		for (let player of this.game['players']) {
+			if (player['username'] === this.usersService.user['username']) {
+				this.game['turns'].shift();
+				this.game['turns'].push(player['username']);
+
+				player['hand'] = player['hand'].filter(c => c !== card);
+				this.game['topOfPile'] = card;
+				this.gameService.takeCard(this.game);
+				break;
+			}
+		}
 	}
 
 	randomCard() {

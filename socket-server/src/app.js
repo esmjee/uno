@@ -70,7 +70,7 @@ io.on('connection', socket => {
                     return;
                 }
 
-                if (user.password == data.password) {
+                if (user.password != data.password) {
                     socket.emit('loggedInUser/incorrect/password', user);
                     return;
                 }
@@ -134,19 +134,27 @@ io.on('connection', socket => {
     });
 
     socket.on('game/start', game => {
-        Game.findOneAndUpdate({ game }, { $set: { status: 'playing' } }, (error, data) => {
+        let allPlayers = [];
+        for (let player of game.players) {
+            allPlayers.push(player.username);
+        }
+        Game.findOneAndUpdate({ game }, { $set: { status: 'playing', turns: allPlayers } }, (error, data) => {
             if (error) {
                 console.log('game/start', error);
                 return;
             } else {
-                // console.log('game/start data:', data);
+                if (!data) return;
+
+                for (let player of data.players) {
+                    data.turns.push(player.username);
+                }
                 io.emit('game/started', data);
             }
         });
     });
 
     socket.on('game/takeCard', game => {
-        Game.findOneAndUpdate({ code: game.code }, { $set: { players: game.players, topOfPile: game.topOfPile } }, (error, data) => {
+        Game.findOneAndUpdate({ code: game.code }, { $set: { players: game.players, topOfPile: game.topOfPile, turns: game.turns } }, (error, data) => {
             if (error) {
                 console.log('game/takeCard', error);
                 return;
@@ -155,7 +163,7 @@ io.on('connection', socket => {
 
                 data.players = game.players;
                 data.topOfPile = game.topOfPile;
-                console.log(data);
+                data.turns = game.turns;
 
                 // console.log('game/card/taken data:', data);
                 io.emit('game/card/taken', data);

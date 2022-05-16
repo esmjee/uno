@@ -4,6 +4,10 @@ var Schema = mongoose.Schema;
 var Game = new Schema({
     created_by: Object,
     code: String,
+    turns: {
+        type: Array,
+        default: []
+    },
     topOfPile: {
         type: Object,
         default: { color: '', value: '' }
