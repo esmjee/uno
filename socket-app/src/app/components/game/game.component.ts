@@ -17,13 +17,41 @@ export class GameComponent implements OnInit {
 	public game = {};
 
 	private availableCards = [
-		'yellow1', 'yellow2', 'yellow3', 'yellow4', 'yellow5', 'yellow6', 'yellow7', 'yellow8', 'yellow9', 'yellow10', 'yellowreverse',
-		'blue1', 'blue2', 'blue3', 'blue4', 'blue5', 'blue6', 'blue7', 'blue8', 'blue9', 'blue10', 'bluereverse',
-		'green1', 'green2', 'green3', 'green4', 'green5', 'green6', 'green7', 'green8', 'green9', 'green10', 'greenreverse',
-		'red1', 'red2', 'red3', 'red4', 'red5', 'red6', 'red7', 'red8', 'red9', 'red10', 'redreverse',
-		'wild', 'redtake2', 'bluetake2', 'greentake2', 'yellowtake2', 'take4'
+		// Yellow
+		{ color: 'yellow', value: '1' }, { color: 'yellow', value: '2' }, { color: 'yellow', value: '3' }, { color: 'yellow', value: '4' }, 
+		{ color: 'yellow', value: '5' }, { color: 'yellow', value: '6' }, { color: 'yellow', value: '7' }, { color: 'yellow', value: '8' }, 
+		{ color: 'yellow', value: '9' }, { color: 'yellow', value: '10' }, 
+		{ color: 'yellow', value: 'reverse' }, { color: 'yellow', value: 'take2' }, { color: 'yellow', value: 'skip' },
+
+		// Red
+		{ color: 'red', value: '1' }, { color: 'red', value: '2' }, { color: 'red', value: '3' }, { color: 'red', value: '4' },
+		{ color: 'red', value: '5' }, { color: 'red', value: '6' }, { color: 'red', value: '7' }, { color: 'red', value: '8' },
+		{ color: 'red', value: '9' }, { color: 'red', value: '10' }, 
+		{ color: 'red', value: 'reverse' }, { color: 'red', value: 'take2' }, { color: 'red', value: 'skip' },
+
+		// Blue
+		{ color: 'blue', value: '1' }, { color: 'blue', value: '2' }, { color: 'blue', value: '3' }, { color: 'blue', value: '4' },
+		{ color: 'blue', value: '5' }, { color: 'blue', value: '6' }, { color: 'blue', value: '7' }, { color: 'blue', value: '8' },
+		{ color: 'blue', value: '9' }, { color: 'blue', value: '10' }, 
+		{ color: 'blue', value: 'reverse' }, { color: 'blue', value: 'take2' }, { color: 'blue', value: 'skip' },
+
+		// Green
+		{ color: 'green', value: '1' }, { color: 'green', value: '2' }, { color: 'green', value: '3' }, { color: 'green', value: '4' },
+		{ color: 'green', value: '5' }, { color: 'green', value: '6' }, { color: 'green', value: '7' }, { color: 'green', value: '8' },
+		{ color: 'green', value: '9' }, { color: 'green', value: '10' }, 
+		{ color: 'green', value: 'reverse' }, { color: 'green', value: 'take2' }, { color: 'green', value: 'skip' },
+
+		// Special
+		{ color: '*', value: 'wild' }, { color: '*', value: 'take4' },
 	];
-	public topOfPile;
+
+	// private availableCards = [
+	// 	'yellow1', 'yellow2', 'yellow3', 'yellow4', 'yellow5', 'yellow6', 'yellow7', 'yellow8', 'yellow9', 'yellow10', 'yellowreverse',
+	// 	'blue1', 'blue2', 'blue3', 'blue4', 'blue5', 'blue6', 'blue7', 'blue8', 'blue9', 'blue10', 'bluereverse',
+	// 	'green1', 'green2', 'green3', 'green4', 'green5', 'green6', 'green7', 'green8', 'green9', 'green10', 'greenreverse',
+	// 	'red1', 'red2', 'red3', 'red4', 'red5', 'red6', 'red7', 'red8', 'red9', 'red10', 'redreverse',
+	// 	'wild', 'redtake2', 'bluetake2', 'greentake2', 'yellowtake2', 'take4'
+	// ];
 
 	contextmenu = false;
 	contextmenuX = 0;
