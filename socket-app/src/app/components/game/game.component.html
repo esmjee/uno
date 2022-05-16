@@ -1,0 +1,73 @@
+<div class="container" *ngIf="!gameCode">
+	<div class="header-holder">
+		<img class="header-image" src="../../../assets/images/background.jpg" />
+	</div>
+	<div class="game-info-holder">
+		<div class="game-info game-type">
+			<p class="title">Type:</p>
+		</div>
+		<div class="game-info game-code">
+			<p class="title">Code:</p>
+		</div>
+		<div class="game-info game-status">
+			<p class="title">Game status:</p>
+		</div>
+		<div class="start-button-holder">
+			<button class="game-start-button" (click)="createGame()">Create Game</button>
+		</div>
+	</div>
+	<div class="players">
+		<p *ngIf="gameService.error">{{gameService.error}}</p>
+	</div>
+</div>
+<div class="container" *ngIf="game && game.status == 'pending'">
+	<div class="header-holder">
+		<img class="header-image" src="../../../assets/images/background.jpg" />
+	</div>
+	<div class="game-info-holder">
+		<div class="game-info game-type">
+			<p class="title">Type:</p>
+			<p class="description">{{ game.type }}</p>
+		</div>
+		<div class="game-info game-code" (click)="copyUrl()">
+			<p class="title">Code:</p>
+			<p class="description">{{ game.code }}</p>
+		</div>
+		<div class="game-info game-status">
+			<p class="title">Game status:</p>
+			<p [class]="'description ' + game.status">{{ game.status }}</p>
+		</div>
+		<div class="start-button-holder">
+			<div *ngIf="game.created_by.username == usersService.user.username">
+				<div *ngIf="game.players.length <= 1">
+					<button class="game-start-button" style="opacity: 50%;">Not enough players</button>
+				</div>
+				<div *ngIf="game.players.length > 1">
+					<button class="game-start-button" (click)="startGame()">Start game</button>
+				</div>
+			</div>
+			<div *ngIf="game.created_by.username != usersService.user.username">
+				<button class="game-start-button" style="opacity: 50%;">You're not the host</button>
+			</div>
+		</div>
+	</div>
+	<div class="players" *ngFor="let player of game.players">
+		<div class="player-card">
+			<div class="avatar-holder">
+				<img class="avatar" src="../../../assets/images/default_avatar.png" />
+			</div>
+			<div class="player-holder">
+				<p class="player-name" (click)="openTab(player.username)">{{ player.username }}</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div *ngIf="game.status && game.status == 'playing'">
+	playing: {{ game.topOfPile }}
+	<div *ngFor="let player of game.players">
+		name: {{ player.username }}
+		<div *ngFor="let card of player.hand">
+			card: {{ card }}
+		</div>
+	</div>
+</div>
