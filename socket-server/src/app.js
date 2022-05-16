@@ -70,7 +70,7 @@ io.on('connection', socket => {
                     return;
                 }
 
-                if (isPasswordCorrect(user.password, data.password)) {
+                if (user.password == data.password) {
                     socket.emit('loggedInUser/incorrect/password', user);
                     return;
                 }
@@ -163,20 +163,33 @@ io.on('connection', socket => {
         });
     });
 
-    socket.on('game/find', code => {
-        Game.findOne({ code: code }, (error, data) => {
+    socket.on('game/find', req => {
+        console.log(req);
+        Game.findOne({ code: req.code }, (error, data) => {
             if (error) {
                 console.log('game/find', error);
                 return;
             } else {
                 if (!data) {
-                    socket.emit('game/code/notFound', code);
+                    socket.emit('game/code/notFound', req.code);
                     return;
                 }
-                
-                if (data.status != "pending") {
-                    socket.emit('game/code/started', code);
-                    return;
+
+                let isInGame = false;
+                if (data.players.length > 0) {
+                    for (let i = 0; i < data.players.length; i++) {
+                        if (data.players[i].username == req.username) {
+                            isInGame = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!isInGame) { 
+                    if (data.status != "pending") {
+                        socket.emit('game/code/started', req.code);
+                        return;
+                    }
                 }
 
                 // console.log('game/find data:', data);

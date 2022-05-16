@@ -42,7 +42,7 @@ export class GameComponent implements OnInit {
 		{ color: 'green', value: 'reverse' }, { color: 'green', value: 'take2' }, { color: 'green', value: 'skip' },
 
 		// Special
-		{ color: '*', value: 'wild' }, { color: '*', value: 'take4' },
+		{ color: '*', value: 'wild' }, { color: '*', value: 'wildDrawFour' },
 	];
 
 	// private availableCards = [
@@ -129,10 +129,10 @@ export class GameComponent implements OnInit {
 		});
 
 		if (this.game) {
-			this.gameService.findGame(this.gameCode);
+			this.gameService.findGame({ code: this.gameCode, username: this.usersService.user['username'] });
 		} else {
 			if (this.gameCode) {
-				this.gameService.findGame(this.gameCode);
+				this.gameService.findGame({ code: this.gameCode, username: this.usersService.user['username'] });
 				this.gameService.error = '';
 			}
 		}
@@ -207,15 +207,36 @@ export class GameComponent implements OnInit {
 		}
 	}
 
-	public playCard(card) {
-		for (let player of this.game['players']) {
-			if (player['username'] === this.usersService.user['username']) {
-				console.log(card);
-				player['hand'] = player['hand'].filter(c => c !== card);
-				this.game['topOfPile'] = card;
-				// this.gameService.playCard(this.game);
-			}
+	public isPlayableCard(card) {
+		// same color
+		if (this.game['topOfPile']['color'] === card['color']) {
+			return true;
 		}
+		// same number/value
+		if (this.game['topOfPile']['value'] === card['value']) {
+			return true;
+		}
+		// special card
+		if (card['value'] == "wild" || card['value'] == "wildDrawFour") {
+			return true;
+		}
+
+		return false;
+	}
+
+	public playCard(card) {
+		console.log('played card', card);
+		console.log('top of pile', this.game['topOfPile']);
+		console.log('is playable', this.isPlayableCard(card));
+
+		// for (let player of this.game['players']) {
+		// 	if (player['username'] === this.usersService.user['username']) {
+		// 		console.log(card);
+		// 		player['hand'] = player['hand'].filter(c => c !== card);
+		// 		this.game['topOfPile'] = card;
+		// 		// this.gameService.playCard(this.game);
+		// 	}
+		// }
 	}
 
 	randomCard() {

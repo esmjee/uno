@@ -5,8 +5,8 @@ var Game = new Schema({
     created_by: Object,
     code: String,
     topOfPile: {
-        type: String,
-        default: '0'
+        type: Object,
+        default: { color: '', value: '' }
     },
     type: {
         type: String,

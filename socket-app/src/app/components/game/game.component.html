@@ -63,11 +63,17 @@
 	</div>
 </div>
 <div *ngIf="game.status && game.status == 'playing'">
-	playing: {{ game.topOfPile }}
+	<p>playing: {{ game.topOfPile.color }} {{ game.topOfPile.value }}</p>
+
 	<div *ngFor="let player of game.players">
-		name: {{ player.username }}
-		<div *ngFor="let card of player.hand">
-			card: {{ card }}
-		</div>
+		<h3>name: {{ player.username }}</h3>
+			
+		<ng-container *ngIf="player.username == usersService.user['username']">
+			<div *ngFor="let card of player.hand">
+				<p *ngIf="isPlayableCard(card)" (click)="playCard(card)">card: {{ card.color }} {{ card.value }}</p>
+				<p *ngIf="!isPlayableCard(card)" style="opacity: 50%;">card: {{ card.color }} {{ card.value }}</p>
+			</div>
+		</ng-container>
 	</div>
+
 </div>

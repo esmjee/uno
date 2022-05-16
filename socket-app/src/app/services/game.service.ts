@@ -16,8 +16,8 @@ export class GameService {
 		this.socket.emit('game/create', game);
 	}
 
-	public findGame(code) {
-		this.socket.emit('game/find', code);
+	public findGame(data) {
+		this.socket.emit('game/find', data);
 	}
 
 	public startGame(game) {
