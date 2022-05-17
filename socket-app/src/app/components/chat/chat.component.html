@@ -1,6 +1,6 @@
 <div *ngIf="game" class="chat-container">
 	<!-- *ngFor="let message of game.chat_messages" -->
-	<div class="chat-holder" *ngIf="game.chat_messages && game.chat_messages.length > 0">
+	<div id="chat-holder" *ngIf="game.chat_messages && game.chat_messages.length > 0">
 		<div class="chat-message" *ngFor="let message of game.chat_messages; let i=index">
 			<div id="chat" [class]="'message-background ' + (i % 2 == 0 ? 'even' : 'odd')">
 				<div class="message-sender">

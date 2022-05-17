@@ -30,14 +30,14 @@ io.on('connection', socket => {
                     socket.emit('loggedInUser/incorrect/password', user);
                     return;
                 }
-
-                const validPassword = bcrypt.compare(user.password, data.password);
-                if (!validPassword) {
-                    socket.emit('loggedInUser/incorrect/password', user);
-                    return;
-                }
-
-                socket.emit('loggedInUser', data);
+                bcrypt.compare(user.password, data.password).then(validPassword => {
+                    if (!validPassword) {
+                        socket.emit('loggedInUser/incorrect/password', user);
+                        return;
+                    }
+    
+                    socket.emit('loggedInUser', data);
+                });
             }
         });
     });
@@ -158,7 +158,7 @@ io.on('connection', socket => {
     });
 
     socket.on('game/takeCard', game => {
-        Game.findOneAndUpdate({ code: game.code }, { $set: { players: game.players, topOfPile: game.topOfPile, turns: game.turns } }, (error, data) => {
+        Game.findOneAndUpdate({ code: game.code }, { $set: { players: game.players, topOfPile: game.topOfPile, turns: game.turns, takeOnPlay: game.takeOnPlay } }, (error, data) => {
             if (error) {
                 console.log('game/takeCard', error);
                 return;
@@ -168,6 +168,7 @@ io.on('connection', socket => {
                 data.players = game.players;
                 data.topOfPile = game.topOfPile;
                 data.turns = game.turns;
+                data.takeOnPlay = game.takeOnPlay;
 
                 // console.log('game/card/taken data:', data);
                 io.emit('game/card/taken', data);
@@ -216,7 +217,7 @@ io.on('connection', socket => {
 
 
     socket.on('game/wonGame', req => {
-        Game.findOneAndUpdate({ code: req.game.code }, { $set: { winner: req.winner } }, (error, data) => {
+        Game.findOneAndUpdate({ code: req.game.code }, { $set: { winner: req.winner, status: 'won' } }, (error, data) => {
             if (error) {
                 console.log('game/wonGame', error);
                 return;
@@ -224,8 +225,9 @@ io.on('connection', socket => {
                 if (!data) return;
 
                 data.winner = req.winner;
+                data.status = 'won';
 
-                io.emit('game/game/won', data);
+                io.emit('game/won', data);
             }
         });
     });

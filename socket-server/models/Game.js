@@ -5,6 +5,7 @@ var Game = new Schema({
     created_by: Object,
     code: String,
     winner: String,
+    takeOnPlay: Number,
     turns: {
         type: Array,
         default: []

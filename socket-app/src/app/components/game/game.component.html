@@ -75,116 +75,309 @@
 	</div>
 </div>
 <div *ngIf="game.status && game.status == 'playing'" class="play-holder">
-	<!-- <p>playing: {{ game.topOfPile.color }} {{ game.topOfPile.value }}</p>
-	<p (click)="takeCardFromPile()">Take a card</p>
-
-	<div *ngFor="let player of game.players">
-		<h3 *ngIf="player.username == game.turns[0]">name: {{ player.username }} **beurt**</h3>
-		<h3 *ngIf="player.username != game.turns[0]">name: {{ player.username }}</h3>
-			
-		<ng-container *ngIf="player.username == usersService.user['username']">
-			<div *ngFor="let card of player.hand">
-				<div *ngIf="isPlayableCard(card)" (click)="playCard(card)">
-
-					<div [class]="'card num-' + card.value + ' my-card ' + card.color">
-						<span class="inner">
-							<span class="mark" *ngIf="card.value != 'reverse'">{{ card.value }}</span>
-							<span class="mark" *ngIf="card.value == 'reverse'">⇄</span>
-						</span>
-					</div>
-
+	<div class="play" [ngStyle]="{'width': (screenWidth < 500 ? '100%' : '80%')}">
+		<div class="container">
+			<div class="row">
+				<div [class]="'play-info ' + (screenWidth < 500 ? 'mobile' : '')">
 				</div>
-				<div *ngIf="!isPlayableCard(card)" style="opacity: 50%;">
+				<div [class]="'play-desk ' + (screenWidth < 500 ? 'mobile' : '')">
+					<!-- Reverse -->
+					<div *ngIf="game.topOfPile.value == 'reverse'" [class]="'card played-card reverse my-card ' + game.topOfPile.color">
+						<span class="inner"><span class="mark">⇄</span></span>
+					</div>
 
-					<div [class]="'card num-' + card.value + ' my-card ' + card.color">
-						<span class="inner">
-							<span class="mark" *ngIf="card.value == 'reverse'">⇄</span>
-							<span class="mark" *ngIf="card.value == 'wildDrawFour'">+4</span>
-							<span class="mark" *ngIf="card.value == 'take2'">+2</span>
-							<span class="mark" *ngIf="card.value == 'skip'">⊘</span>
-							<span class="mark" 
-								*ngIf="card.value != 'reverse' && card.value != 'wildDrawFour' && card.value != 'take2' && card.value != 'skip'">
-								{{ card.value }}
-							</span>
+					<!-- Skip -->
+					<div *ngIf="game.topOfPile.value == 'skip'" [class]="'card skip played-card my-card ' + game.topOfPile.color">
+						<span class="inner"><span class="mark">⊘</span></span>
+					</div>
+
+					<!-- Take 2 -->
+					<div *ngIf="game.topOfPile.value == 'take2'" [class]="'card draw2 played-card my-card ' + game.topOfPile.color"><span class="inner">
+						<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="cardsInInnerPlus2 card-plus2-bottom-left">
+							<span class="inner"></span></div><div class="cardsInInnerPlus2 card-plus2-top-right"><span class="inner"></span>
+							</div></span>
 						</span>
 					</div>
 
+					<!-- Take 4 -->
+					<div *ngIf="game.topOfPile.value == 'wildDrawFour'" [class]="'card played-card plus-4 my-card ' + game.topOfPile.color"><span class="inner">
+						<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="cardsInInnerPlus2 card-plus2-bottom-left">
+							<span class="inner"></span></div><div class="cardsInInnerPlus2 card-plus2-top-right"><span class="inner"></span>
+							</div></span>
+						</span>
+					</div>
+					
+					<!-- Wild -->
+					<div *ngIf="game.topOfPile.value == 'wild'" [class]="'card played-card wild ' + game.topOfPile.color + ' my-card'">
+						<span class="inner">
+							<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="circle-container">
+								<div class="quarter top-left"></div>
+								<div class="quarter top-right"></div>
+								<div class="quarter bottom-left"></div>
+								<div class="quarter bottom-right"></div>
+							<span class="inner">
+							</span></div>
+						</span></span>
+					</div>
+
+					<!-- Other -->
+					<div *ngIf="game.topOfPile.value != 'wild' && game.topOfPile.value != 'skip' &&  game.topOfPile.value != 'reverse' && game.topOfPile.value != 'take2' && game.topOfPile.value != 'wildDrawFour'"
+					[class]="'card played-card num-' + game.topOfPile.value + ' my-card ' + game.topOfPile.color">
+						<span class="inner">
+							<span class="mark">{{ game.topOfPile.value }}</span>
+						</span>
+					</div>
+
+					<div *ngIf="this.game['turns'][0] == this.usersService.user['username']" class="card black take-card" [ngStyle]="{'left': (screenWidth < 500 ? '90%' : '70%')}">
+						<span class="inner" (click)="takeCardFromPile()"
+						[ngStyle]="{'left': (screenWidth < 500 ? '90%' : '70%')}">
+						<span class="mark" style="color: rgb(199, 42, 24); background-color: rgb(199, 42, 24); text-shadow: rgb(199, 42, 24) 1px 1px 1px;">_</span>
+					</span></div>
+					<div *ngIf="this.game['turns'][0] != this.usersService.user['username']" class="card black take-card" [ngStyle]="{'left': (screenWidth < 500 ? '90%' : '70%')}">
+						<span class="inner">
+						<span class="mark" style="color: rgb(199, 42, 24); background-color: rgb(199, 42, 24); text-shadow: rgb(199, 42, 24) 1px 1px 1px;">_</span>
+					</span></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="play-chat">
+					<ng-container *ngIf="screenWidth > 500">
+						<div class="game-chat-holder" *ngIf="game.chat_allowed">
+							<app-chat [game]="game"></app-chat>
+						</div>
+					</ng-container>
+					<ng-container *ngIf="screenWidth < 500">
+						<ng-container *ngIf="showChat">
+							<div class="game-chat-holder" *ngIf="game.chat_allowed">
+								<i class='fas fa-comment-slash' style='font-size:36px' (click)="toggleChat()"></i>
+								<app-chat [game]="game"></app-chat>
+							</div>
+						</ng-container>
+						<ng-container *ngIf="!showChat">
+							<div class="game-chat-holder" *ngIf="game.chat_allowed">
+								<i class='far fa-comment' style='font-size:36px' (click)="toggleChat()"></i>
+							</div>
+						</ng-container>
+					</ng-container>
+				</div>
+				<ng-container *ngFor="let player of game.players">
+					<ng-container *ngIf="screenWidth > 500">
+						<div [class]="player.hand.length < 20 ? 'play-cards' : 'play-20-cards'" *ngIf="player.username == usersService.user['username']">
+							<ng-container *ngFor="let card of player.hand">
+
+								<!-- Reverse -->
+								<div (click)="playCard(card)" *ngIf="card.value == 'reverse'" [class]="'card reverse my-card ' + card.color">
+									<span class="inner"><span class="mark">⇄</span></span>
+								</div>
+
+								<!-- Skip -->
+								<div (click)="playCard(card)" *ngIf="card.value == 'skip'" [class]="'card skip my-card ' + card.color">
+									<span class="inner"><span class="mark">⊘</span></span>
+								</div>
+
+								<!-- Take 2 -->
+								<div (click)="playCard(card)" *ngIf="card.value == 'take2'" [class]="'card draw2 my-card ' + card.color"><span class="inner">
+									<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="cardsInInnerPlus2 card-plus2-bottom-left">
+										<span class="inner"></span></div><div class="cardsInInnerPlus2 card-plus2-top-right"><span class="inner"></span>
+										</div></span>
+									</span>
+								</div>
+
+								<!-- Take 4 -->
+								<div (click)="chooseColor(card)" *ngIf="card.value == 'wildDrawFour'" [class]="'card plus-4 my-card ' + card.color"><span class="inner">
+									<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="cardsInInnerPlus2 card-plus2-bottom-left">
+										<span class="inner"></span></div><div class="cardsInInnerPlus2 card-plus2-top-right"><span class="inner"></span>
+										</div></span>
+									</span>
+								</div>
+								
+								<!-- Wild -->
+								<div (click)="chooseColor(card)" *ngIf="card.value == 'wild'" class="card wild black my-card">
+									<span class="inner">
+										<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="circle-container">
+											<div class="quarter top-left"></div>
+											<div class="quarter top-right"></div>
+											<div class="quarter bottom-left"></div>
+											<div class="quarter bottom-right"></div>
+										<span class="inner">
+										</span></div>
+									</span></span>
+								</div>
+
+								<!-- Other -->
+								<div (click)="playCard(card)" *ngIf="card.value != 'wild' && card.value != 'skip' &&  card.value != 'reverse' && card.value != 'take2' && card.value != 'wildDrawFour'"
+								[class]="'card num-' + card.value + ' my-card ' + card.color">
+									<span class="inner">
+										<span class="mark">{{ card.value }}</span>
+									</span>
+								</div>
+							</ng-container>
+						</div>
+					</ng-container>
+					<ng-container *ngIf="screenWidth < 500">
+						<div [class]="player.hand.length < 4 ? 'play-cards' : 'play-20-cards mobile'" *ngIf="player.username == usersService.user['username']">
+							<ng-container *ngFor="let card of player.hand">
+
+								<!-- Reverse -->
+								<div (click)="playCard(card)" *ngIf="card.value == 'reverse'" [class]="'card reverse my-card ' + card.color">
+									<span class="inner"><span class="mark">⇄</span></span>
+								</div>
+
+								<!-- Skip -->
+								<div (click)="playCard(card)" *ngIf="card.value == 'skip'" [class]="'card skip my-card ' + card.color">
+									<span class="inner"><span class="mark">⊘</span></span>
+								</div>
+
+								<!-- Take 2 -->
+								<div (click)="playCard(card)" *ngIf="card.value == 'take2'" [class]="'card draw2 my-card ' + card.color"><span class="inner">
+									<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="cardsInInnerPlus2 card-plus2-bottom-left">
+										<span class="inner"></span></div><div class="cardsInInnerPlus2 card-plus2-top-right"><span class="inner"></span>
+										</div></span>
+									</span>
+								</div>
+
+								<!-- Take 4 -->
+								<div (click)="chooseColor(card)" *ngIf="card.value == 'wildDrawFour'" [class]="'card plus-4 my-card ' + card.color"><span class="inner">
+									<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="cardsInInnerPlus2 card-plus2-bottom-left">
+										<span class="inner"></span></div><div class="cardsInInnerPlus2 card-plus2-top-right"><span class="inner"></span>
+										</div></span>
+									</span>
+								</div>
+								
+								<!-- Wild -->
+								<div (click)="chooseColor(card)" *ngIf="card.value == 'wild'" class="card wild black my-card">
+									<span class="inner">
+										<span class="mark" style="color: white; text-shadow: rgb(255, 255, 255) 1px 1px 1px;">_<div class="circle-container">
+											<div class="quarter top-left"></div>
+											<div class="quarter top-right"></div>
+											<div class="quarter bottom-left"></div>
+											<div class="quarter bottom-right"></div>
+										<span class="inner">
+										</span></div>
+									</span></span>
+								</div>
+
+								<!-- Other -->
+								<div (click)="playCard(card)" *ngIf="card.value != 'wild' && card.value != 'skip' &&  card.value != 'reverse' && card.value != 'take2' && card.value != 'wildDrawFour'"
+								[class]="'card num-' + card.value + ' my-card ' + card.color">
+									<span class="inner">
+										<span class="mark">{{ card.value }}</span>
+									</span>
+								</div>
+							</ng-container>
+						</div>
+					</ng-container>
+				</ng-container>
+			</div>
+		</div>
+	</div>
+	<div class="opponents" *ngIf="screenWidth > 500">
+		<ng-container class="queue" *ngIf="!viewAllPlayers">
+			<div class="switch-queue">
+				<label class="switch">
+					<input type="checkbox" id="queue-slider" (click)="toggleViewAllPlayers();" checked>
+					<span class="slider round"></span>
+				</label>
+				<p class="info-text">Show all players sorted by least cards</p>
+			</div>
+			<div class="queue-holder">
+				<div class="queue-player" style="opacity: 50%;">
+					<div class="queue-player-info">
+						<div class="queue-player-avatar-holder">
+							<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
+						</div>
+						<div class="queue-player-name-holder">
+							<p class="queue-player-name" *ngIf="game.turns[game.turns.length - 1] != usersService.user.username">{{ game.turns[game.turns.length - 1] }}</p>
+							<p class="queue-player-name" *ngIf="game.turns[game.turns.length - 1] == usersService.user.username">
+								<b>{{ game.turns[game.turns.length - 1] }}</b> (me)
+							</p>
+						</div>
+					</div>
+					<div class="queue-player-card">
+						<div class="card-count-holder">
+							<p class="card-count">{{ game.players[game.turns.length - 1].hand.length }}</p>
+						</div>
+					</div>
+				</div>
+				<div class="queue-player">
+					<div class="queue-player-info">
+						<div class="queue-player-avatar-holder">
+							<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
+						</div>
+						<div class="queue-player-name-holder">
+							<p class="queue-player-name" *ngIf="game.turns[0] != usersService.user.username">{{ game.turns[0] }}</p>
+							<p class="queue-player-name" *ngIf="game.turns[0] == usersService.user.username">
+								<b>{{ game.turns[0] }}</b> (me)
+							</p>
+						</div>
+					</div>
+					<div class="queue-player-card">
+						<div class="card-count-holder">
+							<p class="card-count">{{ game.players[0].hand.length }}</p>
+						</div>
+					</div>
+				</div>
+				<div class="queue-player" style="opacity: 70%;">
+					<div class="queue-player-info">
+						<div class="queue-player-avatar-holder">
+							<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
+						</div>
+						<div class="queue-player-name-holder">
+							<p class="queue-player-name" *ngIf="game.turns[1] != usersService.user.username">{{ game.turns[1] }}</p>
+							<p class="queue-player-name" *ngIf="game.turns[1] == usersService.user.username">
+								<b>{{ game.turns[1] }}</b> (me)
+							</p>
+						</div>
+					</div>
+					<div class="queue-player-card">
+						<div class="card-count-holder">
+							<p class="card-count">{{ game.players[1].hand.length }}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="viewAllPlayers">
+			<div class="all-players">
+				<div class="switch-queue">
+					<label class="switch">
+						<input type="checkbox" id="queue-slider" (click)="toggleViewAllPlayers();">
+						<span class="slider round"></span>
+					</label>
+					<p class="info-text">Show the queue</p>
+				</div>
+				<div class="queue-holder" *ngFor="let player of sortPlayers(); let i = index">
+					<div class="queue-player">
+						<div class="queue-player-info">
+							<p class="position-indicator">{{ i + 1 }}</p>
+							<div class="queue-player-avatar-holder">
+								<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
+							</div>
+							<div class="queue-player-name-holder">
+								<p class="queue-player-name" *ngIf="player.username != usersService.user.username">{{ player.username }}</p>
+								<p class="queue-player-name" *ngIf="player.username == usersService.user.username">
+									<b>{{ player.username }}</b> (me)
+								</p>
+							</div>
+						</div>
+						<div class="queue-player-card">
+							<div class="card-count-holder">
+								<p class="card-count">{{ player.hand.length }}</p>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</ng-container>
 	</div>
-	<div class="game-chat-holder" *ngIf="game.chat_allowed">
-		<app-chat [game]="game"></app-chat>
-	</div> -->
-
-	<!-- <div class="card num-3 my-card yellow"><span class="inner"><span class="mark">3</span></span></div> -->
-
-	<!-- <div class="queue-holder">
-		<div class="queue-player">
-			<div class="queue-player-info">
-				<div class="queue-player-avatar-holder">
-					<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
-				</div>
-				<div class="queue-player-name-holder">
-					<p class="queue-player-name">Player name</p>
-				</div>
-			</div>
-			<div class="queue-player-card">
-				<div class="card-count-holder">
-					<p class="card-count">5</p>
-				</div>
-			</div>
+</div>
+<div *ngIf="game.status && game.status == 'won'">
+	<div class="game-won">
+		<div class="game-won-text">
+			<p>Winner: {{ game.winner }}</p>
 		</div>
-		<div class="queue-player">
-			<div class="queue-player-info">
-				<div class="queue-player-avatar-holder">
-					<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
-				</div>
-				<div class="queue-player-name-holder">
-					<p class="queue-player-name">Player name</p>
-				</div>
-			</div>
-			<div class="queue-player-card">
-				<div class="card-count-holder">
-					<p class="card-count">5</p>
-				</div>
-			</div>
-		</div>
-		<div class="queue-player">
-			<div class="queue-player-info">
-				<div class="queue-player-avatar-holder">
-					<img class="queue-player-avatar" src="../../../assets/images/default_avatar.png" />
-				</div>
-				<div class="queue-player-name-holder">
-					<p class="queue-player-name">Player name</p>
-				</div>
-			</div>
-			<div class="queue-player-card">
-				<div class="card-count-holder">
-					<p class="card-count">5</p>
-				</div>
-			</div>
-		</div>
-	</div> -->
-
-	<!-- <div class="play-info">
-		<div class="play-stats">
-			<div class="box"></div>
-		</div>
-		<div class="play-chat">
-			<div class="box"></div>
+		<div *ngFor="let player of sortPlayers(); let i = index">
+			<p>{{ i+1 }}. {{ player.username }} ({{ player.hand.length }} cards left)</p>
 		</div>
 	</div>
-	<div class="game-play">
-		<div class="play-table">
-			<div class="box"></div>
-		</div>
-		<div class="play-cards">
-			<div class="box"></div>
-		</div>
-	</div>
-	<div class="play-opponents">
-		<div class="box"></div>
-	</div> -->
-
 </div>

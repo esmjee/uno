@@ -11,6 +11,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
+    z-index: 5;
 }
 
 .game-info-holder {
@@ -174,100 +175,189 @@
     border-radius: 50%;
   }
 
-.box {
-    width: 100px;
-    height: 100px;
-    color: red;
+.play {
+	float: left;
+	width: 80%;
+	height: calc(100vh - 30px);
+
+	.row {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.play-info {
+		flex-grow: 1;
+		margin: auto;
+		width: 35%;
+		height: 600px;
+
+    &.mobile {
+      height: 400px;
+    }
+	}
+
+	.play-desk {
+		flex-grow: 1;
+		margin: auto;
+		width: 65%;
+		height: 600px;
+
+    &.mobile {
+      height: 400px;
+    }
+
+		.take-card {
+			position: absolute;
+			top: 30%;
+			left: 70%;
+			margin: -100px 0 0 -150px;
+			cursor: pointer;
+		}
+
+		.played-card {
+			position: absolute;
+			top: 30%;
+			left: 55%;
+			margin: -100px 0 0 -150px;
+		}
+	}
+
+	.play-chat {
+		flex-grow: 1;
+		margin: auto;
+		width: 35%;
+		height: 300px;
+	}
+
+	.play-cards {
+		flex-grow: 1;
+		margin: auto;
+		width: 65%;
+		height: 300px;
+	}
+
+	.play-20-cards {
+		flex-grow: 1;
+    margin: auto;
+		overflow-y: scroll;
+		overflow-x: hidden;
+		width: 65%;
+		height: 317px;
+
+    &.mobile {
+      height: 387px;
+    }
+	}
+}
+
+.opponents {
+	float: left;
+	width: 20%;
+	height: calc(100vh - 30px);
+	display: flex;
+	justify-content: center;
+
+	.switch-queue {
+		height: 100px;
+		width: 100%;
+
+		.info-text {
+			position: absolute;
+			right: 50px;
+			top: 10px;
+		}
+	}
+
+	.queue-holder {
+		margin-top: 50px;
+
+		.queue-player {
+			border: #0f8df3 solid 2px;
+			border-radius: 15px;
+			width: 320px;
+			box-shadow: 0px 2px 5px #404040;
+			height: 185px;
+			background-color: #2196F3;
+			display: flex;
+			margin-bottom: 20px;
+
+			.queue-player-info {
+				width: 85%;
+
+				.position-indicator {
+					margin-left: 13px;
+					color: white;
+					position: absolute;
+				}
+
+				.queue-player-avatar-holder {
+					display: flex;
+					justify-content: center;
+					margin-top: 18px;
+
+					.queue-player-avatar {
+						width: 100px;
+						height: 100px;
+						background-size: cover;
+						background-position: center;
+						background-repeat: no-repeat;
+					}
+				}
+
+				.queue-player-name-holder {
+					display: flex;
+					justify-content: center;
+
+					.queue-player-name {
+						color: #fff;
+						font-size: 20px;
+					}
+				}
+			}
+
+			.queue-player-card {
+				width: 15%;
+				display: flex;
+
+				.card-count-holder {
+					width: 30px;
+					height: 30px;
+					border-radius: 50%;
+					background-color: #fff;
+					box-shadow: 0px 2px 5px #404040;
+					margin-top: 5px;
+
+					.card-count {
+						display: flex;
+						justify-content: center;
+						font-size: 18px;
+						line-height: 0px;
+					}
+				}
+			}
+		}
+	}
 }
 
 .play-holder {
-    // display: flex;
-    // flex-wrap: wrap;
+	background-image: linear-gradient(to left, rgb(253, 255, 255), rgb(242, 255, 255), rgb(236, 255, 255));
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	height: calc(100vh - 18px);
+	width: 100vw;
+}
 
-    .play-info {
-        display: flex;
-        width: 25%;
-        flex-grow: 1;
-    }
-
-    .game-play {
-        display: flex;
-        flex-grow: 1;
-        width: 50%;
-    }
-
-    .play-opponents {
-        display: flex;
-        width: 25%;
-        flex-grow: 1;
-
-        .queue-holder {
-            .queue-player {
-                border: #0f8df3 solid 2px;
-                border-radius: 15px;
-                width: 320px;
-                box-shadow: 0px 2px 5px #404040;
-                height: 185px;
-                background-color: #2196F3;
-                display: flex;
-                margin-bottom: 20px;
-
-                .queue-player-info {
-                    width: 85%;
-
-                    .queue-player-avatar-holder {
-                        display: flex;
-                        justify-content: center;
-                        margin-top: 18px;
-
-                        .queue-player-avatar {
-                            width: 100px;
-                            height: 100px;
-                            background-size: cover;
-                            background-position: center;
-                            background-repeat: no-repeat;
-                        }
-                    }
-
-                    .queue-player-name-holder {
-                        display: flex;
-                        justify-content: center;
-
-                        .queue-player-name {
-                            color: #fff;
-                            font-size: 20px;
-                        }
-                    }
-                }
-
-                .queue-player-card {
-                    width: 15%;
-                    display: flex;
-
-                    .card-count-holder {
-                        width: 30px;
-                        height: 30px;
-                        border-radius: 50%;
-                        background-color: #fff;
-                        box-shadow: 0px 2px 5px #404040;
-                        margin-top: 5px;
-
-                        .card-count {
-                            display: flex;
-                            justify-content: center;
-                            font-size: 18px;
-                            line-height: 0px;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
+.all-players {
+	height: 100%;
+    overflow-y: scroll;
+	max-height: calc(100vh - 18px);
+    overflow-x: hidden;
+    background-color: rgb(255, 255, 255);
 }
 
 // cards
-
 .card {
     width: 116px;
     height: 178px;
@@ -277,7 +367,7 @@
     display: table;
     box-sizing: border-box;
     padding: 5px;
-    margin: 10px;
+    margin: -5px;
     font-family: "Source Sans Pro", sans-serif;
     font-size: 100px;
     text-shadow: 1px 1px 0 #000000, -1px -1px 0 #000000, -1px 1px 0 #000000,
@@ -325,6 +415,16 @@
   .card:after {
     bottom: 15px;
     right: 10px;
+  }
+
+  ::ng-deep .my-card {
+	cursor: pointer;
+
+	&:hover {
+		top: -20px;
+		margin-right: 10px;
+		margin-left: 10px;
+	}
   }
   
   .card.blue {
