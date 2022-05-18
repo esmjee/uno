@@ -20,7 +20,7 @@
 		<p *ngIf="gameService.error">{{gameService.error}}</p>
 	</div>
 </div>
-<div class="container" *ngIf="game && game.status == 'pending'">
+<div class="container" *ngIf="game && game['status'] == 'pending'">
 	<div class="header-holder">
 		<img class="header-image" src="../../../assets/images/background.jpg" />
 	</div>
@@ -74,7 +74,7 @@
 		</div>
 	</div>
 </div>
-<div *ngIf="game.status && game.status == 'playing'" class="play-holder">
+<div *ngIf="game['status'] && game['status'] == 'playing'" class="play-holder">
 	<div class="play" [ngStyle]="{'width': (screenWidth < 500 ? '100%' : '80%')}">
 		<div class="container">
 			<div class="row">
@@ -371,7 +371,7 @@
 		</ng-container>
 	</div>
 </div>
-<div *ngIf="game.status && game.status == 'won'">
+<div *ngIf="game['status'] && game['status'] == 'won'">
 	<div class="game-won">
 		<div class="game-won-text">
 			<p>Winner: {{ game.winner }}</p>

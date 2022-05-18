@@ -1,4 +1,4 @@
-# Socket-app (Client)
+# Socket-Server (Server)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.4.
 
@@ -12,22 +12,16 @@ I wanted to make a learn [socket io](https://www.npmjs.com/package/socket.io) wh
 
 2. Make sure you have [NodeJS](https://nodejs.org/en/download/) installed on your PC.
 
-3. Make sure you have [Angular](https://angular.io/guide/setup-local) installed on your PC.
-- Open a terminal and type `npm install -g @angular/cli`
-
 ### Running the application
 
 1. Open a command line and type `git clone https://github.com/6fy/uno.git`
 - This will clone the whole repository
 
-2. Type `cd uno/socket-app`
-- This will make socket-app your *c*urrent *d*irectory
+2. Type `cd uno/socket-server`
+- This will make socket-server your *c*urrent *d*irectory
 
 3. Type `npm install`
-- This will install everything the client needs to run the application
+- This will install everything the server needs to run the application
 
-4. Type `ng serve` to start the website and browse to `http://localhost:4200`
-- Add `-o` like: `ng serve -o` to open your browser automatically
-- Add `--no-live-reload` like: `ng serve --no-live-reload` to disable page refreshing on document save
-- Add `-prod` like: `ng serve -prod` to run a production build
-- Or find out what else you can use [here](https://angular.io/cli/serve)
+4. Type `npm start` or `node src/app.js` to start the server and browse to `http://localhost:4200`
+- The backend built with [socket io](https://www.npmjs.com/package/socket.io) and [MongoDB](https://www.mongodb.com/try/download/community)
