@@ -4,6 +4,8 @@ const io = require('socket.io')(http);
 const mongoose = require('mongoose')
 const bcrypt = require("bcrypt");
 
+const port = 4444;
+
 // Models
 let User = require('../models/User');
 let Game = require('../models/Game');
@@ -286,6 +288,6 @@ io.on('connection', socket => {
     console.log(`Socket ${socket.id} has connected`);
 });
 
-http.listen(4444, () => {
+http.listen(process.env.PORT || port, () => {
     console.log('Listening on port 4444');
 });
