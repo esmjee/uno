@@ -87,7 +87,6 @@ export class GameComponent implements OnInit {
 		// game errors
 		this.socket.on('game/code/found', (game) => {
 			this.game = game;
-			// console.log('game/code/found', this.game);
 
 			for (let player of this.game['players']) {
 				if (player['username'] === this.usersService.user['username']) {
@@ -115,20 +114,16 @@ export class GameComponent implements OnInit {
 		this.socket.on('game/created', (game) => {
 			this.game = game;
 			this.router.navigate(['/game/' + game.code]);
-			// console.log(this.game);
 		});
 
 		this.socket.on('game/started', (game) => {
 			if (this.gameCode === game.code) {
 				this.game = game;
-				// console.log('game/started', this.game);
 				this.launchGame();
 			}
 		});
 
 		this.socket.on('game/joined', (game) => {
-			// console.log('user joined a game', this.game['code'], game.code);
-			// console.log(game.players);
 			if (this.game['code'] == game.code) {
 				this.game = game;
 			}
@@ -163,7 +158,6 @@ export class GameComponent implements OnInit {
 		this.socket.on('game/card/taken', (game) => {
 			if (this.gameCode === game.code) {
 				this.game = game;
-				// console.log('game/card/taken', this.game);
 
 				let user = this.game['players'].filter(player => player.username == this.usersService.user['username']);
 				if (user[0].hand.length == 0) {
@@ -175,7 +169,6 @@ export class GameComponent implements OnInit {
 		this.socket.on('game/message/new', (game) => {
 			if (this.gameCode === game.code) {
 				this.game = game;
-				// console.log('game/message/new', this.game);
 
 				setTimeout(() => {
 					let msgInput = document.getElementById('chat-holder');
@@ -286,7 +279,6 @@ export class GameComponent implements OnInit {
 		dialogRef.afterClosed().subscribe(color => {
 			if (color) {
 				card.color = color;
-				console.log(card);
 				this.playCard(card);
 			}
 		});
@@ -338,7 +330,6 @@ export class GameComponent implements OnInit {
 	}
 
 	public isPlayableCard(card) {
-		console.log(card, this.game['topOfPile']);
 		// same color
 		if (this.game['topOfPile']['color'] === card['color']) {
 			return true;
