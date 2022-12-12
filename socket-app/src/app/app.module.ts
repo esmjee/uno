@@ -13,7 +13,6 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { AppRoutingModule } from './app-routing.module';
 import { GameComponent } from './components/game/game.component';
 import { LoginComponent } from './components/login/login.component';
-import { PlayerMenuComponent } from './components/player-menu/player-menu.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { ColordialogComponent } from './dialogs/colordialog/colordialog.component';
 
@@ -35,7 +34,6 @@ const routes: Routes = [
     ProfileComponent,
     GameComponent,
     LoginComponent,
-    PlayerMenuComponent,
     ChatComponent,
     ColordialogComponent,
   ],
